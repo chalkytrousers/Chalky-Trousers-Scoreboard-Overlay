@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Banner</title>
+    <title>CT Scoreboard V2 - Banner (Taller)</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-transparent: rgba(0, 0, 0, 0); /* For streaming software */
+            --bg-transparent: rgba(0, 0, 0, 0);
             --banner-bg: #111111;
             --accent-green: #22ff6d;
             --accent-red: #ff4444;
             --border-accent: #22ff6d;
             --text-main: #ffffff;
-            --banner-height: 120px;
+            --banner-height: 160px; /* Increased from 120px */
         }
 
         * { 
@@ -27,39 +27,37 @@
         body, html {
             margin: 0; padding: 0; 
             height: 100%; width: 100%;
-            background-color: var(--bg-transparent); /* Transparent for overlays */
+            background-color: var(--bg-transparent);
             color: var(--text-main); font-family: 'Chakra Petch', sans-serif;
             overflow: hidden;
             display: flex;
-            align-items: center; /* Center the banner on the screen */
+            align-items: center;
             justify-content: center;
         }
 
-        /* The Main Banner Container */
         .banner-container {
             width: 100%;
             height: var(--banner-height);
             background: linear-gradient(90deg, #000 0%, #111 50%, #000 100%);
             display: flex;
             align-items: center;
-            border-top: 3px solid var(--border-accent);
-            border-bottom: 3px solid var(--border-accent);
-            box-shadow: 0 0 20px rgba(34, 255, 109, 0.2);
+            border-top: 4px solid var(--border-accent);
+            border-bottom: 4px solid var(--border-accent);
+            box-shadow: 0 0 25px rgba(34, 255, 109, 0.25);
             position: relative;
         }
 
-        /* Player Sections */
         .player-section {
             flex: 1;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 30px;
             height: 100%;
         }
 
         .player-name {
             flex: 1;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-size: clamp(1.5rem, 4.5vw, 3.2rem); /* Increased max size */
             font-weight: 900;
             text-transform: uppercase;
             color: #ddd;
@@ -69,24 +67,23 @@
         }
 
         .score-box {
-            width: 100px;
+            width: 120px; /* Slightly wider to match height */
             height: 80%;
             background: #1a1a1a;
             border: 2px solid #333;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 3.5rem;
+            font-size: 4.8rem; /* Increased from 3.5rem */
             font-weight: 900;
             border-radius: 8px;
-            margin: 0 15px;
+            margin: 0 20px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        /* Center Info Section */
         .center-info {
-            width: 160px;
+            width: 180px; /* Slightly wider center */
             height: 100%;
             background: #000;
             display: flex;
@@ -100,38 +97,36 @@
 
         .break-indicator {
             position: absolute;
-            top: 5px;
-            font-size: 0.7rem;
+            top: 10px;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--accent-green);
             letter-spacing: 2px;
         }
 
-        .center-label { font-size: 0.6rem; color: #888; text-transform: uppercase; margin-top: 5px; }
-        .center-value { font-size: 0.9rem; font-weight: 900; color: #fff; }
+        .center-label { font-size: 0.7rem; color: #888; text-transform: uppercase; margin-top: 8px; }
+        .center-value { font-size: 1.1rem; font-weight: 900; color: #fff; }
 
         .mid-select {
             background: transparent; border: none; color: #fff; 
-            font-family: inherit; font-size: 0.9rem; font-weight: 900;
+            font-family: inherit; font-size: 1.1rem; font-weight: 900;
             text-align: center; width: 100%; appearance: none;
         }
 
-        /* Logo Area */
         .logo-tag {
             position: absolute;
-            bottom: -25px;
+            bottom: -28px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--border-accent);
             color: #000;
-            padding: 2px 15px;
-            font-size: 0.6rem;
+            padding: 3px 20px;
+            font-size: 0.7rem;
             font-weight: 900;
             border-radius: 0 0 8px 8px;
             text-transform: uppercase;
         }
 
-        /* Animations */
         @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
         .flash-active { animation: flash 0.3s ease-out; }
 
@@ -172,8 +167,6 @@
         function handleScore(id, e) {
             const el = document.getElementById(id);
             let val = parseInt(el.innerText);
-            
-            // Right side of score box adds, left side subtracts (simple for mobile)
             const rect = el.getBoundingClientRect();
             const x = e.clientX - rect.left;
             
@@ -185,7 +178,6 @@
             } else {
                 val = Math.max(0, val - 1);
             }
-            
             el.innerText = val;
         }
 
