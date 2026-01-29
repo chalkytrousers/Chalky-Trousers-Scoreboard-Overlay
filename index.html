@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Keyboard Fixed</title>
+    <title>CT Scoreboard V2 - Final Spacing</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -34,10 +34,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: align-items 0.3s ease; /* Smooth transition for keyboard mode */
+            transition: align-items 0.3s ease;
         }
 
-        /* Shift banner to top when editing names */
         body.keyboard-active {
             align-items: flex-start;
             padding-top: 20px;
@@ -74,7 +73,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            user-select: text !important; /* Allow selection for typing */
+            user-select: text !important;
             -webkit-user-select: text !important;
         }
 
@@ -103,17 +102,16 @@
             background: #000;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Changed to start to control spacing manually */
             align-items: center;
             border-left: 1px solid #333;
             border-right: 1px solid #333;
             position: relative;
             flex-shrink: 0;
+            padding-top: 10px;
         }
 
         .break-wrap {
-            position: absolute;
-            top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -121,13 +119,16 @@
             color: var(--accent-green);
             text-shadow: 0 0 12px rgba(34, 255, 109, 0.5);
             cursor: pointer;
+            margin-bottom: 12px; /* Gap below BREAK */
         }
 
         .break-text { font-size: clamp(18px, 2vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
         .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
 
-        /* Moved header down by increasing margin-top */
-        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 25px; font-weight: 700; }
+        /* Precise label spacing */
+        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 0; }
+        .label-race { margin-top: 10px; } /* Additional gap above RACE TO header */
+        .label-rules { margin-top: -2px; } /* Closes gap between dropdown and next header */
         
         .mid-select {
             background: transparent; border: none; color: #fff; 
@@ -135,6 +136,8 @@
             text-align: center; text-align-last: center;
             width: 100%; appearance: none; -webkit-appearance: none;
             cursor: pointer; text-transform: uppercase;
+            line-height: 1.2;
+            margin-top: -4px; /* Tightens gap between header and value */
         }
 
         .logo-tag {
@@ -179,11 +182,11 @@
                 <div id="arr-right" class="arrow hidden">►</div>
             </div>
 
-            <div class="center-label">RACE TO</div>
+            <div class="center-label label-race">RACE TO</div>
             <select id="race-to-select" class="mid-select">
                 </select>
 
-            <div class="center-label">RULES</div>
+            <div class="center-label label-rules">RULES</div>
             <select id="rules-select" class="mid-select">
                 <option value="uk8">uk8</option>
                 <option value="wpa">wpa</option>
@@ -203,7 +206,6 @@
     <script>
         let breakSide = 1;
 
-        // Populate Race To dropdown 1-30
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
@@ -213,7 +215,6 @@
             raceSelect.appendChild(opt);
         }
 
-        // --- KEYBOARD MANAGEMENT ---
         const playerNames = document.querySelectorAll('.player-name');
         playerNames.forEach(name => {
             name.addEventListener('focus', () => {
@@ -221,9 +222,8 @@
             });
             name.addEventListener('blur', () => {
                 document.body.classList.remove('keyboard-active');
-                window.scrollTo(0, 0); // Reset any scroll Safari might have forced
+                window.scrollTo(0, 0);
             });
-            // Handle "Enter" key to blur
             name.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -232,7 +232,6 @@
             });
         });
 
-        // --- GLOBAL ANTI-ZOOM ---
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = (new Date()).getTime();
