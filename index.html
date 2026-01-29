@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V4.3 - Android Fixed</title>
+    <title>CT Scoreboard V4.4 - Pro Tap</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -23,7 +23,6 @@
             user-select: none !important; 
             -webkit-tap-highlight-color: transparent; 
             touch-action: manipulation; 
-            /* ANDROID FIX: Prevents long-press popups/search results */
             -webkit-touch-callout: none !important;
         }
 
@@ -62,7 +61,6 @@
             text-transform: uppercase; color: #fff; outline: none;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
             letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(255,255,255,0.2);
-            /* ANDROID FIX: Ensure name remains editable but not "selectable" for search */
             user-select: text !important;
         }
 
@@ -123,7 +121,8 @@
         .flash-active { animation: flash 0.4s ease-out; }
     </style>
 </head>
-<body oncontextmenu="return false;"> <div id="orientation-overlay"><h2>PLEASE ROTATE</h2></div>
+<body oncontextmenu="return false;">
+    <div id="orientation-overlay"><h2>PLEASE ROTATE</h2></div>
 
     <div class="banner-container">
         <div class="player-section" style="justify-content: flex-end; text-align: right;">
@@ -163,30 +162,44 @@
             raceSelect.appendChild(opt);
         }
 
-        // --- ANDROID/IOS TOUCH FIXES ---
-        function attachFastClick(id, callback) {
+        // --- ANDROID/IOS SMART TOUCH ---
+        function attachScoreEvents(id) {
             const el = document.getElementById(id);
-            // use touchstart for instant response on Android
+            let timer;
+
             el.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Prevents zoom/delay
-                callback(e);
+                e.preventDefault();
+                // Set a timer for long-press (500ms)
+                timer = setTimeout(() => {
+                    handleScoreAction(id, 'subtract');
+                    timer = null;
+                }, 500);
+            }, { passive: false });
+
+            el.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (timer) {
+                    // It was a short tap, not a long press
+                    clearTimeout(timer);
+                    handleScoreAction(id, 'add');
+                }
             }, { passive: false });
         }
 
-        attachFastClick('s1', (e) => handleScore('s1', e));
-        attachFastClick('s2', (e) => handleScore('s2', e));
-        attachFastClick('break-btn', () => toggleBreak());
+        attachScoreEvents('s1');
+        attachScoreEvents('s2');
 
-        function handleScore(id, e) {
+        // Simple click for the Break button
+        document.getElementById('break-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            toggleBreak();
+        }, { passive: false });
+
+        function handleScoreAction(id, action) {
             const el = document.getElementById(id);
             let val = parseInt(el.innerText);
-            const rect = el.getBoundingClientRect();
-            
-            // Get touch position
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
 
-            if (x > rect.width / 2) {
+            if (action === 'add') {
                 val++;
                 el.classList.add('flash-active');
                 setTimeout(() => el.classList.remove('flash-active'), 400);
@@ -212,13 +225,8 @@
             });
         });
 
-        // Anti-Zoom Global
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            let now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) e.preventDefault();
-            lastTouchEnd = now;
-        }, { passive: false });
+        // Global Anti-Zoom
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
     </script>
 </body>
 </html>
