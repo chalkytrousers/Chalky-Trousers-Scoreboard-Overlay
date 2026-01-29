@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Chalky Trousers V4 - Final</title>
+    <title>Chalky Trousers V4 - Blue Key</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Forced black background to fix white browser issue */
-            --bg-page: #000000; 
+            /* Pure blue background for easy Chroma Key removal in TikTok Studio */
+            --bg-page: #0000ff; 
             --banner-bg: #111111;
             --accent-green: #22ff6d;
             --neon-bright: #e0ffe7; 
@@ -39,12 +39,12 @@
             transition: all 0.3s ease;
         }
 
-        /* Keyboard Focus Mode */
+        /* Keyboard Focus Mode: Banner pops to top and shrinks when typing */
         body.keyboard-active { align-items: flex-start; padding-top: 5px; }
         body.keyboard-active .banner-container { height: 100px; transform: scale(0.95); }
         body.keyboard-active .center-info { display: none; }
 
-        /* Neon Animation */
+        /* Neon Animation Keyframes */
         @keyframes neon-travel {
             0% { background-position: 100% 0; }
             100% { background-position: -100% 0; }
@@ -64,7 +64,7 @@
             overflow: visible;
         }
 
-        /* Neon Runners */
+        /* Animated Neon Runners on Top and Bottom */
         .banner-container::before, .banner-container::after {
             content: ''; position: absolute; left: 0; width: 100%; height: 4px;
             background: linear-gradient(90deg, var(--accent-green) 0%, var(--neon-bright) 50%, var(--accent-green) 100%);
@@ -181,7 +181,7 @@
     <script>
         let breakSide = 1;
 
-        // Populate Dropdown 1-30
+        // Populate Race To dropdown 1-30
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
@@ -190,7 +190,7 @@
             raceSelect.appendChild(opt);
         }
 
-        // Keyboard Logic
+        // Keyboard Logic for Mobile
         const playerNames = document.querySelectorAll('.player-name');
         playerNames.forEach(name => {
             name.addEventListener('focus', () => {
