@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V4 - Ultra Keyboard Fix</title>
+    <title>CT Scoreboard V4 - Neon Animation</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -11,6 +11,8 @@
             --bg-transparent: rgba(0, 0, 0, 0);
             --banner-bg: #111111;
             --accent-green: #22ff6d;
+            /* Brighter version for the center of the neon glow */
+            --neon-bright: #e0ffe7; 
             --border-accent: #22ff6d;
             --text-main: #ffffff;
             --banner-height: 160px;
@@ -37,18 +39,15 @@
             transition: all 0.3s ease;
         }
 
-        /* --- THE KEYBOARD FIX --- */
-        body.keyboard-active {
-            align-items: flex-start;
-            padding-top: 5px;
-        }
-        /* Scale down and hide middle info when typing to save space */
-        body.keyboard-active .banner-container {
-            height: 100px;
-            transform: scale(0.95);
-        }
-        body.keyboard-active .center-info {
-            display: none; /* Hides the bulky center during typing */
+        /* Keyboard fixes */
+        body.keyboard-active { align-items: flex-start; padding-top: 5px; }
+        body.keyboard-active .banner-container { height: 100px; transform: scale(0.95); }
+        body.keyboard-active .center-info { display: none; }
+
+        /* --- NEON ANIMATION KEYFRAMES --- */
+        @keyframes neon-travel {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
         }
 
         .banner-container {
@@ -57,118 +56,103 @@
             background: linear-gradient(90deg, #000 0%, #111 50%, #000 100%);
             display: flex;
             align-items: center;
-            border-top: 4px solid var(--border-accent);
-            border-bottom: 4px solid var(--border-accent);
-            box-shadow: 0 0 25px rgba(34, 255, 109, 0.25);
+            /* We keep thickness but make color transparent so the animation shows through */
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            /* Base static green glow */
+            box-shadow: 0 0 25px rgba(34, 255, 109, 0.3);
             position: relative;
             transition: all 0.3s ease;
+            overflow: visible; /* Allows the glow to bleed out */
         }
 
+        /* The Top and Bottom Neon Runners */
+        .banner-container::before,
+        .banner-container::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 4px; /* Match border thickness */
+            /* The Gradient: Normal Green -> Bright White/Green -> Normal Green */
+            background: linear-gradient(90deg, 
+                var(--accent-green) 0%, 
+                var(--neon-bright) 50%, 
+                var(--accent-green) 100%);
+            background-size: 200% auto; /* Make it wide for smooth travel */
+            /* The animation: 4 seconds, linear speed, infinite loop */
+            animation: neon-travel 4s linear infinite;
+            z-index: 5; /* Sit on top of banner background */
+            /* Adds an extra bright glow that travels with the light */
+            filter: drop-shadow(0 0 5px var(--neon-bright));
+        }
+
+        /* Position Top Runner */
+        .banner-container::before { top: -4px; }
+        /* Position Bottom Runner */
+        .banner-container::after { bottom: -4px; }
+
+
         .player-section {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            padding: 0 1vw;
-            height: 100%;
-            overflow: hidden;
+            flex: 1; display: flex; align-items: center;
+            padding: 0 1vw; height: 100%; overflow: hidden;
         }
 
         .player-name {
-            flex: 1;
-            font-size: clamp(20px, 4vw, 3.5rem); 
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #ddd;
-            outline: none;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            user-select: text !important;
-            -webkit-user-select: text !important;
+            flex: 1; font-size: clamp(20px, 4vw, 3.5rem); font-weight: 900;
+            text-transform: uppercase; color: #ddd; outline: none;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            user-select: text !important; -webkit-user-select: text !important;
         }
 
         .score-box {
-            width: var(--score-w);
-            min-width: 65px;
-            max-width: 130px;
-            height: 85%;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: clamp(2.5rem, 9vw, 5.5rem);
-            font-weight: 900;
-            border-radius: 8px;
-            margin: 0 1vw;
-            cursor: pointer;
+            width: var(--score-w); min-width: 65px; max-width: 130px; height: 85%;
+            background: #1a1a1a; border: 2px solid #333;
+            display: flex; justify-content: center; align-items: center;
+            font-size: clamp(2.5rem, 9vw, 5.5rem); font-weight: 900;
+            border-radius: 8px; margin: 0 1vw; cursor: pointer;
         }
 
         .center-info {
-            width: var(--center-w);
-            min-width: 100px;
-            max-width: 180px;
-            height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; 
-            align-items: center;
-            border-left: 1px solid #333;
-            border-right: 1px solid #333;
-            position: relative;
-            flex-shrink: 0;
-            padding-top: 10px;
+            width: var(--center-w); min-width: 100px; max-width: 180px; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: flex-start; align-items: center;
+            border-left: 1px solid #333; border-right: 1px solid #333;
+            position: relative; flex-shrink: 0; padding-top: 10px;
         }
 
         .break-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: var(--accent-green);
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; color: var(--accent-green);
             text-shadow: 0 0 12px rgba(34, 255, 109, 0.5);
-            cursor: pointer;
-            margin-bottom: 12px;
+            cursor: pointer; margin-bottom: 12px;
         }
-
         .break-text { font-size: clamp(18px, 2vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
         .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
 
         .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 0; }
         .label-race { margin-top: 10px; }
         .label-rules { margin-top: 12px; } 
-        
+
         .mid-select {
             background: transparent; border: none; color: #fff; 
             font-family: inherit; font-size: 20px; font-weight: 900;
             text-align: center; text-align-last: center;
             width: 100%; appearance: none; -webkit-appearance: none;
             cursor: pointer; text-transform: uppercase;
-            line-height: 1.2;
-            margin-top: -4px;
+            line-height: 1.2; margin-top: -4px;
         }
 
         .logo-tag {
-            position: absolute;
-            bottom: -28px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            color: #fff;
-            padding: 3px 25px;
-            font-size: 0.8rem;
-            font-weight: 900;
-            border: 1px solid #333;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            text-transform: uppercase;
-            white-space: nowrap;
+            position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
+            background: #000; color: #fff; padding: 3px 25px;
+            font-size: 0.8rem; font-weight: 900;
+            border: 1px solid #333; border-top: none;
+            border-radius: 0 0 8px 8px; text-transform: uppercase; white-space: nowrap;
         }
 
         @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
         .flash-active { animation: flash 0.3s ease-out; }
-
         .hidden { visibility: hidden; }
 
         #orientation-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
@@ -217,8 +201,7 @@
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
-            opt.value = i;
-            opt.innerHTML = i;
+            opt.value = i; opt.innerHTML = i;
             if (i === 7) opt.selected = true;
             raceSelect.appendChild(opt);
         }
@@ -227,7 +210,6 @@
         playerNames.forEach(name => {
             name.addEventListener('focus', () => {
                 document.body.classList.add('keyboard-active');
-                // Small delay to ensure browser settles after keyboard pops
                 setTimeout(() => window.scrollTo(0, 0), 100);
             });
             name.addEventListener('blur', () => {
@@ -235,10 +217,7 @@
                 window.scrollTo(0, 0);
             });
             name.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    name.blur();
-                }
+                if (e.key === 'Enter') { e.preventDefault(); name.blur(); }
             });
         });
 
