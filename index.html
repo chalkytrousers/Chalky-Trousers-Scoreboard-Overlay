@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Zero Zoom</title>
+    <title>CT Scoreboard V2 - Advanced Break</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -22,7 +22,7 @@
             box-sizing: border-box; 
             user-select: none !important; 
             -webkit-tap-highlight-color: transparent; 
-            touch-action: manipulation; /* Tells iOS to ignore double-tap to zoom */
+            touch-action: manipulation; 
         }
 
         body, html {
@@ -59,7 +59,7 @@
 
         .player-name {
             flex: 1;
-            font-size: clamp(20px, 4vw, 3.5rem); /* Increased minimum to 20px */
+            font-size: clamp(20px, 4vw, 3.5rem); 
             font-weight: 900;
             text-transform: uppercase;
             color: #ddd;
@@ -102,17 +102,24 @@
             flex-shrink: 0;
         }
 
-        .break-indicator {
+        /* Improved central Break display */
+        .break-wrap {
             position: absolute;
             top: 10px;
-            font-size: clamp(18px, 2vw, 1.2rem); 
-            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             color: var(--accent-green);
-            letter-spacing: 2px;
+            text-shadow: 0 0 12px rgba(34, 255, 109, 0.5);
+            cursor: pointer;
         }
 
-        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 12px; font-weight: 700; }
-        .center-value { font-size: 20px; font-weight: 900; color: #fff; } /* Fixed 20px to prevent zoom */
+        .break-text { font-size: clamp(18px, 2vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
+        .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
+
+        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 15px; font-weight: 700; }
+        .center-value { font-size: 20px; font-weight: 900; color: #fff; }
 
         .mid-select {
             background: transparent; border: none; color: #fff; 
@@ -139,6 +146,8 @@
         @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
         .flash-active { animation: flash 0.3s ease-out; }
 
+        .hidden { visibility: hidden; }
+
         #orientation-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
         @media screen and (orientation: portrait) { #orientation-overlay { display: flex; } .banner-container { display: none; } }
     </style>
@@ -153,13 +162,19 @@
         </div>
 
         <div class="center-info">
-            <div class="break-indicator" id="break-label">◄ BREAK</div>
+            <div class="break-wrap" onclick="toggleBreak()">
+                <div id="arr-left" class="arrow">◄</div>
+                <div class="break-text">BREAK</div>
+                <div id="arr-right" class="arrow hidden">►</div>
+            </div>
+
             <div class="center-label">RACE TO</div>
             <select id="race-to-select" class="mid-select">
                 <option value="5">5</option>
                 <option value="7" selected>7</option>
                 <option value="9">9</option>
                 <option value="11">11</option>
+                <option value="13">13</option>
             </select>
             <div class="center-label">RULES</div>
             <div class="center-value">ULTIMATE</div>
@@ -176,8 +191,7 @@
     <script>
         let breakSide = 1;
 
-        // --- GLOBAL ANTI-ZOOM INTERCEPTOR ---
-        // Catches all double-taps and multi-finger gestures across the whole document
+        // --- GLOBAL ANTI-ZOOM ---
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = (new Date()).getTime();
@@ -202,6 +216,7 @@
                 val++;
                 el.classList.add('flash-active');
                 setTimeout(() => el.classList.remove('flash-active'), 300);
+                // Auto-switch break side on point win
                 toggleBreak();
             } else {
                 val = Math.max(0, val - 1);
@@ -211,8 +226,16 @@
 
         function toggleBreak() {
             breakSide = breakSide === 1 ? 2 : 1;
-            const label = document.getElementById('break-label');
-            label.innerText = breakSide === 1 ? "◄ BREAK" : "BREAK ►";
+            const left = document.getElementById('arr-left');
+            const right = document.getElementById('arr-right');
+            
+            if (breakSide === 1) {
+                left.classList.remove('hidden');
+                right.classList.add('hidden');
+            } else {
+                left.classList.add('hidden');
+                right.classList.remove('hidden');
+            }
         }
     </script>
 </body>
