@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chalky Trousers - Banner V4</title>
+    <title>Chalky Trousers - Centered Banner</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #000000;
-            --ct-green: #22ff6d; /* Back to your original green */
+            --ct-green: #22ff6d;
             --border-color: rgba(255, 255, 255, 0.1);
-            --banner-h: 95px; 
-            --mid-w: 110px;    
+            --banner-h: 80px; 
+            --content-width: 800px; /* Pulls players in from the edges */
         }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         
@@ -19,17 +19,20 @@
             margin: 0; padding: 0; height: 100dvh; width: 100vw;
             background: transparent; 
             font-family: 'Chakra Petch', sans-serif; 
-            display: flex; align-items: flex-end; /* Keeps it pinned to bottom of window */
+            display: flex; align-items: flex-end; justify-content: center;
             overflow: hidden;
         }
 
         .banner-wrap {
-            width: 100%; height: var(--banner-h);
-            background: linear-gradient(180deg, #111 0%, #000 100%);
-            border-top: 2px solid var(--ct-green); /* Green border like V1 */
+            width: var(--content-width); 
+            height: var(--banner-h);
+            background: rgba(0, 0, 0, 0.85); /* Slight transparency */
+            border: 2px solid var(--ct-green);
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 20px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
+            margin-bottom: 40px; /* Lifts it up from the bottom for easier cropping */
+            box-shadow: 0 0 20px rgba(0,0,0,1);
         }
 
         .side { flex: 1; display: flex; align-items: center; gap: 15px; }
@@ -37,42 +40,31 @@
         .p2 { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
         
         .name { 
-            font-size: clamp(1.2rem, 3vw, 2.2rem); 
-            font-weight: 900; color: #fff; 
-            text-transform: uppercase; 
-            white-space: nowrap; outline: none;
+            font-size: 1.5rem; font-weight: 900; color: #fff; 
+            text-transform: uppercase; white-space: nowrap; outline: none;
         }
 
         .score { 
-            min-width: 85px; height: 75px; 
-            background: #000; border: 2px solid var(--border-color);
+            min-width: 70px; height: 60px; 
+            background: #111; border: 1px solid var(--border-color);
             display: flex; align-items: center; justify-content: center;
-            font-size: 3.5rem; font-weight: 900; color: #fff; 
+            font-size: 2.8rem; font-weight: 900; color: #fff; 
             border-radius: 4px; cursor: pointer;
-            transition: border-color 0.2s;
         }
-        .score:active { border-color: var(--ct-green); }
 
-        /* Restored central hub style */
         .center-hub { 
-            width: var(--mid-w); height: 100%;
+            width: 120px; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
-            background: rgba(255,255,255,0.02);
         }
 
-        .label { font-size: 0.6rem; color: #666; font-weight: 700; letter-spacing: 1px; }
-        .race-val { 
-            color: #fff; font-size: 1.4rem; font-weight: 900; 
-            margin: 2px 0; cursor: pointer;
-        }
+        .label { font-size: 0.5rem; color: #888; font-weight: 700; letter-spacing: 1px; }
+        .race-val { color: #fff; font-size: 1.2rem; font-weight: 900; margin: 0; }
         
-        /* Green Break Indicator */
         .break-indicator {
-            font-size: 0.65rem; font-weight: 900;
-            color: var(--ct-green); text-shadow: 0 0 10px rgba(34, 255, 109, 0.4);
-            margin-top: 2px;
+            font-size: 0.6rem; font-weight: 900;
+            color: var(--ct-green); text-shadow: 0 0 8px rgba(34, 255, 109, 0.4);
         }
 
         .hidden { visibility: hidden; }
@@ -103,15 +95,14 @@
             let el = document.getElementById(id);
             let val = parseInt(el.innerText) + n;
             el.innerText = Math.max(0, val);
-            if(n > 0) { // Toggle break on score
+            if(n > 0) {
                 document.getElementById('brk-1').classList.toggle('hidden');
                 document.getElementById('brk-2').classList.toggle('hidden');
             }
         }
-
         function toggleRace() {
             let el = document.getElementById('race');
-            let races = [5, 7, 9, 11, 13, 17, 21];
+            let races = [5, 7, 9, 11, 13];
             let current = parseInt(el.innerText);
             let next = races[(races.indexOf(current) + 1) % races.length];
             el.innerText = next;
