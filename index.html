@@ -3,174 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V4 - Ultra Keyboard Fix</title>
+    <title>CT Scoreboard V5</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --bg-transparent: rgba(0, 0, 0, 0);
-            --banner-bg: #111111;
             --accent-green: #22ff6d;
-            --border-accent: #22ff6d;
-            --text-main: #ffffff;
             --banner-height: 160px;
-            --score-w: 12vw; 
-            --center-w: 18vw; 
         }
 
-        * { 
-            box-sizing: border-box; 
-            user-select: none !important; 
-            -webkit-tap-highlight-color: transparent; 
-            touch-action: manipulation; 
-        }
+        * { box-sizing: border-box; user-select: none !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
         body, html {
-            margin: 0; padding: 0; 
-            height: 100%; width: 100%;
-            background-color: var(--bg-transparent);
-            color: var(--text-main); font-family: 'Chakra Petch', sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            background-color: transparent; color: #fff;
+            font-family: 'Chakra Petch', sans-serif;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- THE KEYBOARD FIX --- */
-        body.keyboard-active {
-            align-items: flex-start;
-            padding-top: 5px;
+        /* --- THE MAGIC KEYBOARD FIX --- */
+        #mobile-input-bar {
+            display: none; position: fixed; top: 0; left: 0; width: 100%;
+            height: 50px; background: #222; border-bottom: 2px solid var(--accent-green);
+            z-index: 9999; padding: 5px 15px; align-items: center; gap: 10px;
         }
-        /* Scale down and hide middle info when typing to save space */
-        body.keyboard-active .banner-container {
-            height: 100px;
-            transform: scale(0.95);
+        #mobile-actual-input {
+            flex: 1; background: #000; border: 1px solid #444; color: #fff;
+            font-size: 18px; padding: 5px 10px; border-radius: 4px; font-family: inherit;
         }
-        body.keyboard-active .center-info {
-            display: none; /* Hides the bulky center during typing */
+        #mobile-done-btn {
+            background: var(--accent-green); color: #000; border: none;
+            padding: 5px 15px; border-radius: 4px; font-weight: 900;
         }
+
+        /* Hide the banner entirely when typing to give browser room */
+        body.typing-active .banner-container { display: none !important; }
+        body.typing-active #mobile-input-bar { display: flex; }
 
         .banner-container {
-            width: 100%;
-            height: var(--banner-height);
+            width: 100%; height: var(--banner-height);
             background: linear-gradient(90deg, #000 0%, #111 50%, #000 100%);
-            display: flex;
-            align-items: center;
-            border-top: 4px solid var(--border-accent);
-            border-bottom: 4px solid var(--border-accent);
-            box-shadow: 0 0 25px rgba(34, 255, 109, 0.25);
+            display: flex; align-items: center;
+            border-top: 4px solid var(--accent-green);
+            border-bottom: 4px solid var(--accent-green);
             position: relative;
-            transition: all 0.3s ease;
         }
 
-        .player-section {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            padding: 0 1vw;
-            height: 100%;
-            overflow: hidden;
-        }
-
+        .player-section { flex: 1; display: flex; align-items: center; padding: 0 1vw; height: 100%; overflow: hidden; }
+        
         .player-name {
-            flex: 1;
-            font-size: clamp(20px, 4vw, 3.5rem); 
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #ddd;
-            outline: none;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            user-select: text !important;
-            -webkit-user-select: text !important;
+            flex: 1; font-size: clamp(20px, 4vw, 3.5rem); font-weight: 900;
+            text-transform: uppercase; color: #ddd; outline: none;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            cursor: pointer;
         }
 
         .score-box {
-            width: var(--score-w);
-            min-width: 65px;
-            max-width: 130px;
-            height: 85%;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: clamp(2.5rem, 9vw, 5.5rem);
-            font-weight: 900;
-            border-radius: 8px;
-            margin: 0 1vw;
-            cursor: pointer;
+            width: 12vw; min-width: 65px; max-width: 130px; height: 85%;
+            background: #1a1a1a; border: 2px solid #333;
+            display: flex; justify-content: center; align-items: center;
+            font-size: clamp(2.5rem, 9vw, 5.5rem); font-weight: 900;
+            border-radius: 8px; margin: 0 1vw; cursor: pointer;
         }
 
         .center-info {
-            width: var(--center-w);
-            min-width: 100px;
-            max-width: 180px;
-            height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; 
-            align-items: center;
-            border-left: 1px solid #333;
-            border-right: 1px solid #333;
-            position: relative;
-            flex-shrink: 0;
-            padding-top: 10px;
+            width: 18vw; min-width: 100px; max-width: 180px; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: flex-start; align-items: center;
+            border-left: 1px solid #333; border-right: 1px solid #333;
+            position: relative; flex-shrink: 0; padding-top: 10px;
         }
 
-        .break-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: var(--accent-green);
-            text-shadow: 0 0 12px rgba(34, 255, 109, 0.5);
-            cursor: pointer;
-            margin-bottom: 12px;
-        }
-
+        .break-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--accent-green); cursor: pointer; margin-bottom: 12px; }
         .break-text { font-size: clamp(18px, 2vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
         .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
 
-        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 0; }
+        .center-label { font-size: 14px; color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 0; }
         .label-race { margin-top: 10px; }
         .label-rules { margin-top: 12px; } 
         
         .mid-select {
             background: transparent; border: none; color: #fff; 
             font-family: inherit; font-size: 20px; font-weight: 900;
-            text-align: center; text-align-last: center;
-            width: 100%; appearance: none; -webkit-appearance: none;
-            cursor: pointer; text-transform: uppercase;
-            line-height: 1.2;
-            margin-top: -4px;
+            text-align: center; text-align-last: center; width: 100%; 
+            appearance: none; -webkit-appearance: none; cursor: pointer;
         }
 
         .logo-tag {
-            position: absolute;
-            bottom: -28px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            color: #fff;
-            padding: 3px 25px;
-            font-size: 0.8rem;
-            font-weight: 900;
-            border: 1px solid #333;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            text-transform: uppercase;
-            white-space: nowrap;
+            position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
+            background: #000; color: #fff; padding: 3px 25px;
+            font-size: 0.8rem; font-weight: 900; border: 1px solid #333;
+            border-top: none; border-radius: 0 0 8px 8px; text-transform: uppercase;
         }
 
-        @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
-        .flash-active { animation: flash 0.3s ease-out; }
-
         .hidden { visibility: hidden; }
-
         #orientation-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
         @media screen and (orientation: portrait) { #orientation-overlay { display: flex; } .banner-container { display: none; } }
     </style>
@@ -178,9 +103,14 @@
 <body>
     <div id="orientation-overlay"><h2>ROTATE TO LANDSCAPE</h2></div>
 
+    <div id="mobile-input-bar">
+        <input type="text" id="mobile-actual-input" placeholder="Enter Name...">
+        <button id="mobile-done-btn">DONE</button>
+    </div>
+
     <div class="banner-container">
         <div class="player-section" style="justify-content: flex-end; text-align: right;">
-            <div class="player-name" id="p1-txt" contenteditable="true" spellcheck="false">PLAYER 1</div>
+            <div class="player-name" id="p1-txt">PLAYER 1</div>
             <div class="score-box" id="s1" onpointerdown="handleScore('s1', event)">0</div>
         </div>
 
@@ -190,22 +120,17 @@
                 <div class="break-text">BREAK</div>
                 <div id="arr-right" class="arrow hidden">►</div>
             </div>
-
             <div class="center-label label-race">RACE TO</div>
             <select id="race-to-select" class="mid-select"></select>
-
             <div class="center-label label-rules">RULES</div>
             <select id="rules-select" class="mid-select">
-                <option value="uk8">uk8</option>
-                <option value="wpa">wpa</option>
-                <option value="ultimate" selected>ultimate</option>
-                <option value="custom">custom</option>
+                <option value="uk8">uk8</option><option value="wpa">wpa</option><option value="ultimate" selected>ultimate</option><option value="custom">custom</option>
             </select>
         </div>
 
         <div class="player-section">
             <div class="score-box" id="s2" onpointerdown="handleScore('s2', event)">0</div>
-            <div class="player-name" id="p2-txt" contenteditable="true" spellcheck="false">PLAYER 2</div>
+            <div class="player-name" id="p2-txt">PLAYER 2</div>
         </div>
 
         <div class="logo-tag">WWW.CHALKYTROUSERS.CO.UK</div>
@@ -213,59 +138,57 @@
 
     <script>
         let breakSide = 1;
+        let activePlayerId = null;
 
+        // --- POPULATE RACE ---
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
-            opt.value = i;
-            opt.innerHTML = i;
+            opt.value = i; opt.innerHTML = i;
             if (i === 7) opt.selected = true;
             raceSelect.appendChild(opt);
         }
 
-        const playerNames = document.querySelectorAll('.player-name');
-        playerNames.forEach(name => {
-            name.addEventListener('focus', () => {
-                document.body.classList.add('keyboard-active');
-                // Small delay to ensure browser settles after keyboard pops
-                setTimeout(() => window.scrollTo(0, 0), 100);
-            });
-            name.addEventListener('blur', () => {
-                document.body.classList.remove('keyboard-active');
-                window.scrollTo(0, 0);
-            });
-            name.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    name.blur();
-                }
-            });
+        // --- TYPING OVERLAY LOGIC ---
+        const p1Name = document.getElementById('p1-txt');
+        const p2Name = document.getElementById('p2-txt');
+        const overlay = document.getElementById('mobile-input-bar');
+        const overlayInput = document.getElementById('mobile-actual-input');
+        const doneBtn = document.getElementById('mobile-done-btn');
+
+        function openTyping(elId) {
+            activePlayerId = elId;
+            const currentName = document.getElementById(elId).innerText;
+            overlayInput.value = currentName;
+            document.body.classList.add('typing-active');
+            overlayInput.focus();
+        }
+
+        p1Name.addEventListener('click', () => openTyping('p1-txt'));
+        p2Name.addEventListener('click', () => openTyping('p2-txt'));
+
+        doneBtn.addEventListener('click', () => {
+            if (activePlayerId) {
+                document.getElementById(activePlayerId).innerText = overlayInput.value.toUpperCase();
+            }
+            document.body.classList.remove('typing-active');
+            window.scrollTo(0, 0);
         });
 
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            let now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) event.preventDefault(); 
-            lastTouchEnd = now;
-        }, { passive: false });
+        // Close on Enter key
+        overlayInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doneBtn.click();
+        });
 
-        document.addEventListener('gesturestart', (e) => e.preventDefault());
-
+        // --- THE REST OF THE LOGIC ---
         function handleScore(id, e) {
             const el = document.getElementById(id);
             let val = parseInt(el.innerText);
             const rect = el.getBoundingClientRect();
             const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            const x = clientX - rect.left;
-            
-            if (x > rect.width / 2) {
-                val++;
-                el.classList.add('flash-active');
-                setTimeout(() => el.classList.remove('flash-active'), 300);
-                toggleBreak();
-            } else {
-                val = Math.max(0, val - 1);
-            }
+            if ((clientX - rect.left) > rect.width / 2) {
+                val++; toggleBreak();
+            } else { val = Math.max(0, val - 1); }
             el.innerText = val;
         }
 
@@ -274,6 +197,14 @@
             document.getElementById('arr-left').classList.toggle('hidden');
             document.getElementById('arr-right').classList.toggle('hidden');
         }
+
+        // Anti-Zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) e.preventDefault();
+            lastTouchEnd = now;
+        }, { passive: false });
     </script>
 </body>
 </html>
