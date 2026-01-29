@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Name Optimized</title>
+    <title>CT Scoreboard V2 - Zero Zoom</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -14,8 +14,6 @@
             --border-accent: #22ff6d;
             --text-main: #ffffff;
             --banner-height: 160px;
-            
-            /* Reduced widths to prioritize name space */
             --score-w: 12vw; 
             --center-w: 18vw; 
         }
@@ -24,7 +22,7 @@
             box-sizing: border-box; 
             user-select: none !important; 
             -webkit-tap-highlight-color: transparent; 
-            touch-action: none; 
+            touch-action: manipulation; /* Tells iOS to ignore double-tap to zoom */
         }
 
         body, html {
@@ -54,14 +52,14 @@
             flex: 1;
             display: flex;
             align-items: center;
-            padding: 0 1vw; /* Reduced side padding */
+            padding: 0 1vw;
             height: 100%;
             overflow: hidden;
         }
 
         .player-name {
             flex: 1;
-            font-size: clamp(16px, 4vw, 3.5rem); 
+            font-size: clamp(20px, 4vw, 3.5rem); /* Increased minimum to 20px */
             font-weight: 900;
             text-transform: uppercase;
             color: #ddd;
@@ -84,14 +82,13 @@
             font-size: clamp(2.5rem, 9vw, 5.5rem);
             font-weight: 900;
             border-radius: 8px;
-            margin: 0 1vw; /* Reduced margin around scores */
+            margin: 0 1vw;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .center-info {
             width: var(--center-w);
-            min-width: 100px; /* Narrower center */
+            min-width: 100px;
             max-width: 160px;
             height: 100%;
             background: #000;
@@ -105,34 +102,31 @@
             flex-shrink: 0;
         }
 
-        /* Bigger game information text */
         .break-indicator {
             position: absolute;
             top: 10px;
-            font-size: clamp(0.8rem, 2vw, 1.2rem); 
+            font-size: clamp(18px, 2vw, 1.2rem); 
             font-weight: 900;
             color: var(--accent-green);
             letter-spacing: 2px;
-            white-space: nowrap;
         }
 
-        .center-label { font-size: clamp(0.6rem, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 12px; font-weight: 700; }
-        .center-value { font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: 900; color: #fff; }
+        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 12px; font-weight: 700; }
+        .center-value { font-size: 20px; font-weight: 900; color: #fff; } /* Fixed 20px to prevent zoom */
 
         .mid-select {
             background: transparent; border: none; color: #fff; 
-            font-family: inherit; font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: 900;
+            font-family: inherit; font-size: 20px; font-weight: 900;
             text-align: center; width: 100%; appearance: none;
         }
 
-        /* Chalky Trousers Logo: Black background, White text */
         .logo-tag {
             position: absolute;
             bottom: -28px;
             left: 50%;
             transform: translateX(-50%);
-            background: #000000;
-            color: #ffffff;
+            background: #000;
+            color: #fff;
             padding: 3px 25px;
             font-size: 0.8rem;
             font-weight: 900;
@@ -140,7 +134,6 @@
             border-top: none;
             border-radius: 0 0 8px 8px;
             text-transform: uppercase;
-            white-space: nowrap;
         }
 
         @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
@@ -183,6 +176,8 @@
     <script>
         let breakSide = 1;
 
+        // --- GLOBAL ANTI-ZOOM INTERCEPTOR ---
+        // Catches all double-taps and multi-finger gestures across the whole document
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = (new Date()).getTime();
@@ -190,7 +185,7 @@
                 event.preventDefault(); 
             }
             lastTouchEnd = now;
-        }, false);
+        }, { passive: false });
 
         document.addEventListener('gesturestart', function(e) {
             e.preventDefault();
