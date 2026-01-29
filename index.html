@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Banner (Taller)</title>
+    <title>CT Scoreboard V2 - Responsive Banner</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -11,10 +11,12 @@
             --bg-transparent: rgba(0, 0, 0, 0);
             --banner-bg: #111111;
             --accent-green: #22ff6d;
-            --accent-red: #ff4444;
             --border-accent: #22ff6d;
             --text-main: #ffffff;
-            --banner-height: 160px; /* Increased from 120px */
+            --banner-height: 160px;
+            /* Relative widths for horizontal resizing */
+            --score-w: 14vw; 
+            --center-w: 22vw;
         }
 
         * { 
@@ -51,39 +53,45 @@
             flex: 1;
             display: flex;
             align-items: center;
-            padding: 0 30px;
+            padding: 0 2vw; /* Responsive padding */
             height: 100%;
+            overflow: hidden;
         }
 
         .player-name {
             flex: 1;
-            font-size: clamp(1.5rem, 4.5vw, 3.2rem); /* Increased max size */
+            font-size: clamp(1rem, 3.5vw, 3rem); /* Fluid font size */
             font-weight: 900;
             text-transform: uppercase;
             color: #ddd;
             outline: none;
             overflow: hidden;
+            text-overflow: ellipsis; /* Prevents text from breaking layout */
             white-space: nowrap;
         }
 
         .score-box {
-            width: 120px; /* Slightly wider to match height */
+            width: var(--score-w);
+            min-width: 60px;
+            max-width: 140px;
             height: 80%;
             background: #1a1a1a;
             border: 2px solid #333;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 4.8rem; /* Increased from 3.5rem */
+            font-size: clamp(2rem, 8vw, 4.8rem); /* Score scales with screen */
             font-weight: 900;
             border-radius: 8px;
-            margin: 0 20px;
+            margin: 0 1.5vw;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .center-info {
-            width: 180px; /* Slightly wider center */
+            width: var(--center-w);
+            min-width: 110px;
+            max-width: 200px;
             height: 100%;
             background: #000;
             display: flex;
@@ -93,23 +101,25 @@
             border-left: 1px solid #333;
             border-right: 1px solid #333;
             position: relative;
+            flex-shrink: 0; /* Prevents center from being crushed */
         }
 
         .break-indicator {
             position: absolute;
             top: 10px;
-            font-size: 0.8rem;
+            font-size: clamp(0.5rem, 1.5vw, 0.8rem);
             font-weight: 700;
             color: var(--accent-green);
             letter-spacing: 2px;
+            white-space: nowrap;
         }
 
-        .center-label { font-size: 0.7rem; color: #888; text-transform: uppercase; margin-top: 8px; }
-        .center-value { font-size: 1.1rem; font-weight: 900; color: #fff; }
+        .center-label { font-size: clamp(0.4rem, 1.2vw, 0.7rem); color: #888; text-transform: uppercase; margin-top: 8px; }
+        .center-value { font-size: clamp(0.7rem, 2vw, 1.1rem); font-weight: 900; color: #fff; }
 
         .mid-select {
             background: transparent; border: none; color: #fff; 
-            font-family: inherit; font-size: 1.1rem; font-weight: 900;
+            font-family: inherit; font-size: clamp(0.7rem, 2vw, 1.1rem); font-weight: 900;
             text-align: center; width: 100%; appearance: none;
         }
 
@@ -125,6 +135,7 @@
             font-weight: 900;
             border-radius: 0 0 8px 8px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
