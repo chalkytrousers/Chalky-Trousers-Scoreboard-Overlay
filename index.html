@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V4 - Transparent</title>
+    <title>Chalky Trousers V4 - Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Main change: Explicitly set background variable to transparent */
-            --bg-transparent: transparent;
+            /* Forced black background to fix white browser issue */
+            --bg-page: #000000; 
             --banner-bg: #111111;
             --accent-green: #22ff6d;
             --neon-bright: #e0ffe7; 
@@ -30,8 +30,7 @@
         body, html {
             margin: 0; padding: 0; 
             height: 100%; width: 100%;
-            /* Ensure the entire page background is transparent */
-            background-color: var(--bg-transparent);
+            background-color: var(--bg-page);
             color: var(--text-main); font-family: 'Chakra Petch', sans-serif;
             overflow: hidden;
             display: flex;
@@ -40,12 +39,12 @@
             transition: all 0.3s ease;
         }
 
-        /* Keyboard fixes */
+        /* Keyboard Focus Mode */
         body.keyboard-active { align-items: flex-start; padding-top: 5px; }
         body.keyboard-active .banner-container { height: 100px; transform: scale(0.95); }
         body.keyboard-active .center-info { display: none; }
 
-        /* --- NEON ANIMATION KEYFRAMES --- */
+        /* Neon Animation */
         @keyframes neon-travel {
             0% { background-position: 100% 0; }
             100% { background-position: -100% 0; }
@@ -65,27 +64,17 @@
             overflow: visible;
         }
 
-        /* The Top and Bottom Neon Runners */
-        .banner-container::before,
-        .banner-container::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, 
-                var(--accent-green) 0%, 
-                var(--neon-bright) 50%, 
-                var(--accent-green) 100%);
+        /* Neon Runners */
+        .banner-container::before, .banner-container::after {
+            content: ''; position: absolute; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--accent-green) 0%, var(--neon-bright) 50%, var(--accent-green) 100%);
             background-size: 200% auto;
             animation: neon-travel 4s linear infinite;
             z-index: 5;
             filter: drop-shadow(0 0 5px var(--neon-bright));
         }
-
         .banner-container::before { top: -4px; }
         .banner-container::after { bottom: -4px; }
-
 
         .player-section {
             flex: 1; display: flex; align-items: center;
@@ -192,6 +181,7 @@
     <script>
         let breakSide = 1;
 
+        // Populate Dropdown 1-30
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
@@ -200,6 +190,7 @@
             raceSelect.appendChild(opt);
         }
 
+        // Keyboard Logic
         const playerNames = document.querySelectorAll('.player-name');
         playerNames.forEach(name => {
             name.addEventListener('focus', () => {
@@ -215,6 +206,7 @@
             });
         });
 
+        // Anti-Zoom
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = (new Date()).getTime();
