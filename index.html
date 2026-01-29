@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Chalky Trousers V4 - Pro Neon Edition</title>
+    <title>CT Scoreboard V4.1 - Precision Fit</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Neon blue for Chroma Key */
             --bg-page: #0000ff; 
-            /* Subtle dark gradient for the main banner background */
             --banner-bg: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
             --accent-green: #22ff6d;
             --neon-bright: #e0ffe7;
-            /* Gradient for a 3D score box effect */
             --score-bg: linear-gradient(145deg, #222 0%, #111 100%);
             --text-main: #ffffff;
             --banner-height: 160px;
@@ -22,156 +19,94 @@
             --center-w: 18vw;
         }
 
-        * {
-            box-sizing: border-box;
-            user-select: none !important;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
+        * { box-sizing: border-box; user-select: none !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
         body, html {
-            margin: 0; padding: 0;
-            height: 100%; width: 100%;
-            background-color: var(--bg-page);
-            color: var(--text-main); font-family: 'Chakra Petch', sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            background-color: var(--bg-page); color: var(--text-main);
+            font-family: 'Chakra Petch', sans-serif; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* Keyboard Focus Mode */
+        /* Keyboard Active State */
         body.keyboard-active { align-items: flex-start; padding-top: 5px; }
         body.keyboard-active .banner-container { height: 100px; transform: scale(0.95); }
         body.keyboard-active .center-info { display: none; }
 
-        /* --- ADVANCED NEON ANIMATIONS --- */
-        @keyframes neon-travel {
-            0% { background-position: 100% 0; }
-            100% { background-position: -100% 0; }
-        }
-
-        /* Pulsating neon effect */
-        @keyframes neon-pulse {
-            0%, 100% { filter: drop-shadow(0 0 5px var(--neon-bright)) drop-shadow(0 0 15px var(--accent-green)); }
-            50% { filter: drop-shadow(0 0 8px var(--neon-bright)) drop-shadow(0 0 25px var(--accent-green)); }
-        }
+        @keyframes neon-travel { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+        @keyframes neon-pulse { 0%, 100% { filter: drop-shadow(0 0 5px var(--neon-bright)) drop-shadow(0 0 15px var(--accent-green)); } 50% { filter: drop-shadow(0 0 8px var(--neon-bright)) drop-shadow(0 0 25px var(--accent-green)); } }
 
         .banner-container {
-            width: 100%;
-            height: var(--banner-height);
-            background: var(--banner-bg);
-            display: flex;
-            align-items: center;
-            border-top: 4px solid transparent;
-            border-bottom: 4px solid transparent;
-            /* Multi-layered box-shadow for realistic light spill */
-            box-shadow: 
-                0 0 10px rgba(34, 255, 109, 0.2),
-                0 0 30px rgba(34, 255, 109, 0.1);
-            position: relative;
-            transition: all 0.3s ease;
-            overflow: visible;
+            width: 100%; height: var(--banner-height);
+            background: var(--banner-bg); display: flex; align-items: center;
+            border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+            box-shadow: 0 0 10px rgba(34, 255, 109, 0.2); position: relative;
         }
 
-        /* Top and Bottom Neon Light Bars with white "core" */
         .banner-container::before, .banner-container::after {
             content: ''; position: absolute; left: 0; width: 100%; height: 5px;
-            background: linear-gradient(90deg, 
-                var(--accent-green) 0%, 
-                var(--neon-bright) 45%, 
-                #fff 50%, 
-                var(--neon-bright) 55%, 
-                var(--accent-green) 100%);
-            background-size: 200% auto;
-            animation: neon-travel 3s linear infinite, neon-pulse 2s ease-in-out infinite;
-            z-index: 5;
+            background: linear-gradient(90deg, var(--accent-green) 0%, var(--neon-bright) 45%, #fff 50%, var(--neon-bright) 55%, var(--accent-green) 100%);
+            background-size: 200% auto; animation: neon-travel 3s linear infinite, neon-pulse 2s ease-in-out infinite; z-index: 5;
         }
-        .banner-container::before { top: -5px; }
-        .banner-container::after { bottom: -5px; }
+        .banner-container::before { top: -5px; } .banner-container::after { bottom: -5px; }
 
-        .player-section {
-            flex: 1; display: flex; align-items: center;
-            padding: 0 1.5vw; height: 100%; overflow: hidden;
-        }
+        .player-section { flex: 1; display: flex; align-items: center; padding: 0 1.5vw; height: 100%; overflow: hidden; }
 
         .player-name {
-            flex: 1; font-size: clamp(22px, 4.5vw, 3.8rem); font-weight: 900;
+            flex: 1; font-size: clamp(20px, 4.2vw, 3.5rem); font-weight: 900;
             text-transform: uppercase; color: #fff; outline: none;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-            letter-spacing: 1px;
-            /* Subtle glow on text */
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-            user-select: text !important; -webkit-user-select: text !important;
+            letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
         .score-box {
-            width: var(--score-w); min-width: 75px; max-width: 140px; height: 80%;
-            background: var(--score-bg); 
-            border: 2px solid #333;
-            /* Inset shadow for glassmorphism/tubed effect */
+            width: var(--score-w); min-width: 70px; max-width: 135px; height: 80%;
+            background: var(--score-bg); border: 2px solid #333;
             box-shadow: inset 0 0 15px rgba(255,255,255,0.05), 0 10px 20px rgba(0,0,0,0.5);
             display: flex; justify-content: center; align-items: center;
-            font-size: clamp(2.8rem, 10vw, 5.8rem); font-weight: 900;
-            border-radius: 12px; margin: 0 1vw; cursor: pointer;
-            color: var(--accent-green);
-            text-shadow: 0 0 20px rgba(34, 255, 109, 0.4);
+            font-size: clamp(2.5rem, 9vw, 5.5rem); font-weight: 900;
+            border-radius: 10px; margin: 0 1vw; color: var(--accent-green);
         }
 
         .center-info {
-            width: var(--center-w); min-width: 110px; max-width: 190px; height: 100%;
-            /* Semi-transparent center for a frosted glass look */
-            background: rgba(0,0,0,0.4); 
-            backdrop-filter: blur(5px);
-            display: flex; flex-direction: column;
-            justify-content: flex-start; align-items: center;
-            border-left: 2px solid #222; border-right: 2px solid #222;
-            position: relative; flex-shrink: 0; padding-top: 12px;
+            width: var(--center-w); min-width: 100px; max-width: 175px; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            display: flex; flex-direction: column; justify-content: center; /* Centered vertically to prevent spill */
+            align-items: center; border-left: 2px solid #222; border-right: 2px solid #222;
+            position: relative; flex-shrink: 0; padding: 5px 0;
         }
 
         .break-wrap {
             display: flex; align-items: center; justify-content: center;
-            gap: 12px; color: var(--accent-green);
-            filter: drop-shadow(0 0 8px var(--accent-green));
-            cursor: pointer; margin-bottom: 15px;
+            gap: 8px; color: var(--accent-green); cursor: pointer;
+            margin-bottom: 8px; width: 100%; /* Contained within center hub */
         }
-        .break-text { font-size: clamp(20px, 2.2vw, 1.4rem); font-weight: 900; letter-spacing: 3px; }
-        .arrow { font-size: 1.4rem; font-weight: 900; width: 18px; text-align: center; }
+        .break-text { font-size: clamp(16px, 1.8vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
+        .arrow { font-size: 1.2rem; font-weight: 900; width: 20px; text-align: center; }
 
-        .center-label { font-size: clamp(15px, 1.6vw, 1rem); color: #aaa; text-transform: uppercase; font-weight: 800; margin-bottom: 2px; letter-spacing: 1px; }
-        .label-race { margin-top: 5px; }
-        .label-rules { margin-top: 15px; }
-
+        .center-label { font-size: clamp(12px, 1.4vw, 0.8rem); color: #aaa; text-transform: uppercase; font-weight: 800; margin: 2px 0; }
+        
         .mid-select {
             background: transparent; border: none; color: #fff;
-            font-family: inherit; font-size: 22px; font-weight: 900;
-            text-align: center; text-align-last: center;
-            width: 100%; appearance: none; -webkit-appearance: none;
-            cursor: pointer; text-transform: uppercase;
-            line-height: 1.2;
+            font-family: inherit; font-size: 18px; font-weight: 900;
+            text-align: center; text-align-last: center; width: 100%;
+            appearance: none; -webkit-appearance: none; cursor: pointer;
+            text-transform: uppercase; line-height: 1;
         }
 
         .logo-tag {
-            position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
-            background: #000; color: #fff; padding: 5px 30px;
-            font-size: 0.85rem; font-weight: 900;
-            border: 1px solid #333; border-top: none;
-            border-radius: 0 0 10px 10px; text-transform: uppercase; white-space: nowrap;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            letter-spacing: 1px;
+            position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+            background: #000; color: #fff; padding: 4px 25px;
+            font-size: 0.8rem; font-weight: 900; border: 1px solid #333;
+            border-top: none; border-radius: 0 0 8px 8px; text-transform: uppercase;
         }
 
-        @keyframes flash { 0% { background: var(--accent-green); color: #000; } 100% { background: var(--score-bg); color: var(--accent-green); } }
-        .flash-active { animation: flash 0.4s ease-out; }
         .hidden { visibility: hidden; }
-
-        #orientation-overlay { display: none; position: fixed; inset: 0; background: #0a0a0a; z-index: 100; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         @media screen and (orientation: portrait) { #orientation-overlay { display: flex; } .banner-container { display: none; } }
     </style>
 </head>
 <body>
-    <div id="orientation-overlay"><h2>PLEASE ROTATE<br>TO LANDSCAPE</h2></div>
+    <div id="orientation-overlay"><h2>PLEASE ROTATE</h2></div>
 
     <div class="banner-container">
         <div class="player-section" style="justify-content: flex-end; text-align: right;">
@@ -186,10 +121,10 @@
                 <div id="arr-right" class="arrow hidden">►</div>
             </div>
 
-            <div class="center-label label-race">RACE TO</div>
+            <div class="center-label">RACE TO</div>
             <select id="race-to-select" class="mid-select"></select>
 
-            <div class="center-label label-rules">RULES</div>
+            <div class="center-label" style="margin-top: 6px;">RULES</div>
             <select id="rules-select" class="mid-select">
                 <option value="uk8">uk8</option>
                 <option value="wpa">wpa</option>
@@ -208,7 +143,6 @@
 
     <script>
         let breakSide = 1;
-
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
@@ -219,43 +153,17 @@
 
         const playerNames = document.querySelectorAll('.player-name');
         playerNames.forEach(name => {
-            name.addEventListener('focus', () => {
-                document.body.classList.add('keyboard-active');
-                setTimeout(() => window.scrollTo(0, 0), 100);
-            });
-            name.addEventListener('blur', () => {
-                document.body.classList.remove('keyboard-active');
-                window.scrollTo(0, 0);
-            });
-            name.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') { e.preventDefault(); name.blur(); }
-            });
+            name.addEventListener('focus', () => document.body.classList.add('keyboard-active'));
+            name.addEventListener('blur', () => { document.body.classList.remove('keyboard-active'); window.scrollTo(0,0); });
         });
-
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            let now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) event.preventDefault();
-            lastTouchEnd = now;
-        }, { passive: false });
-
-        document.addEventListener('gesturestart', (e) => e.preventDefault());
 
         function handleScore(id, e) {
             const el = document.getElementById(id);
             let val = parseInt(el.innerText);
             const rect = el.getBoundingClientRect();
             const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            const x = clientX - rect.left;
-
-            if (x > rect.width / 2) {
-                val++;
-                el.classList.add('flash-active');
-                setTimeout(() => el.classList.remove('flash-active'), 400);
-                toggleBreak();
-            } else {
-                val = Math.max(0, val - 1);
-            }
+            if ((clientX - rect.left) > rect.width / 2) { val++; toggleBreak(); } 
+            else { val = Math.max(0, val - 1); }
             el.innerText = val;
         }
 
