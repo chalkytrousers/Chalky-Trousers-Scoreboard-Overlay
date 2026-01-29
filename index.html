@@ -3,81 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chalky Trousers - High-Viz Banner</title>
+    <title>Chalky Trousers - Banner V4</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #000000;
-            --ct-red: #ff4444;
-            --ct-green: #22ff6d;
-            --banner-h: 105px; /* Slightly taller for better readability */
-            --mid-w: 90px;    /* Narrower middle box */
+            --ct-green: #22ff6d; /* Back to your original green */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --banner-h: 95px; 
+            --mid-w: 110px;    
         }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
         body, html { 
-            margin: 0; padding: 0; height: 100dvh; background: transparent;
-            font-family: 'Chakra Petch', sans-serif; display: flex; align-items: flex-end; 
+            margin: 0; padding: 0; height: 100dvh; width: 100vw;
+            background: transparent; 
+            font-family: 'Chakra Petch', sans-serif; 
+            display: flex; align-items: flex-end; /* Keeps it pinned to bottom of window */
+            overflow: hidden;
         }
 
         .banner-wrap {
             width: 100%; height: var(--banner-h);
-            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
-            border-top: 4px solid var(--ct-red);
+            background: linear-gradient(180deg, #111 0%, #000 100%);
+            border-top: 2px solid var(--ct-green); /* Green border like V1 */
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 10px; box-shadow: 0 -10px 25px rgba(0,0,0,0.8);
+            padding: 0 20px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
         }
 
-        .side { flex: 1; display: flex; align-items: center; gap: 12px; overflow: hidden; }
+        .side { flex: 1; display: flex; align-items: center; gap: 15px; }
         .p1 { justify-content: flex-start; }
         .p2 { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
         
-        .name { font-size: 1.6rem; font-weight: 900; color: #fff; text-transform: uppercase; white-space: nowrap; }
+        .name { 
+            font-size: clamp(1.2rem, 3vw, 2.2rem); 
+            font-weight: 900; color: #fff; 
+            text-transform: uppercase; 
+            white-space: nowrap; outline: none;
+        }
+
         .score { 
-            min-width: 80px; height: 75px; background: #111; border: 2px solid var(--ct-red);
+            min-width: 85px; height: 75px; 
+            background: #000; border: 2px solid var(--border-color);
             display: flex; align-items: center; justify-content: center;
-            font-size: 3.2rem; font-weight: 900; color: #fff; border-radius: 6px; cursor: pointer;
+            font-size: 3.5rem; font-weight: 900; color: #fff; 
+            border-radius: 4px; cursor: pointer;
+            transition: border-color 0.2s;
         }
+        .score:active { border-color: var(--ct-green); }
 
-        /* Taller, narrower center block */
+        /* Restored central hub style */
         .center-hub { 
-            width: var(--mid-w); height: 110%; /* Makes it "pop" slightly higher than the banner */
-            background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 2px solid var(--ct-red); border-bottom: none; border-radius: 8px 8px 0 0;
-            margin-bottom: 10px; z-index: 10;
+            width: var(--mid-w); height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
         }
 
-        .label { font-size: 0.65rem; color: #aaa; font-weight: 700; letter-spacing: 1px; }
+        .label { font-size: 0.6rem; color: #666; font-weight: 700; letter-spacing: 1px; }
         .race-val { 
-            color: var(--ct-red); font-size: 1.4rem; font-weight: 900; 
-            margin: -2px 0; text-shadow: 0 0 8px rgba(255, 68, 68, 0.4);
+            color: #fff; font-size: 1.4rem; font-weight: 900; 
+            margin: 2px 0; cursor: pointer;
         }
         
-        .break-box { 
-            margin-top: 5px; padding: 2px 8px; border-radius: 4px;
-            font-size: 0.7rem; font-weight: 900; transition: all 0.3s;
+        /* Green Break Indicator */
+        .break-indicator {
+            font-size: 0.65rem; font-weight: 900;
+            color: var(--ct-green); text-shadow: 0 0 10px rgba(34, 255, 109, 0.4);
+            margin-top: 2px;
         }
-        .active-break { background: var(--ct-green); color: #000; box-shadow: 0 0 10px var(--ct-green); }
-        .inactive { color: #333; border: 1px solid #222; }
 
-        .hidden { display: none; }
+        .hidden { visibility: hidden; }
     </style>
 </head>
 <body>
     <div class="banner-wrap">
         <div class="side p1">
-            <div class="name" contenteditable="true">PLAYER 1</div>
+            <div class="name" contenteditable="true" spellcheck="false">PLAYER 1</div>
             <div class="score" id="s1" onclick="upd('s1', 1)" oncontextmenu="event.preventDefault(); upd('s1', -1)">0</div>
         </div>
 
         <div class="center-hub">
             <div class="label">RACE TO</div>
-            <div class="race-val" id="race" onclick="toggleRace()">5</div>
-            <div id="brk-1" class="break-box active-break">BREAK</div>
-            <div id="brk-2" class="break-box inactive hidden">BREAK</div>
+            <div class="race-val" id="race" onclick="toggleRace()">7</div>
+            <div id="brk-1" class="break-indicator">◄ BREAK</div>
+            <div id="brk-2" class="break-indicator hidden">BREAK ►</div>
         </div>
 
         <div class="side p2">
-            <div class="name" contenteditable="true">PLAYER 2</div>
+            <div class="name" contenteditable="true" spellcheck="false">PLAYER 2</div>
             <div class="score" id="s2" onclick="upd('s2', 1)" oncontextmenu="event.preventDefault(); upd('s2', -1)">0</div>
         </div>
     </div>
@@ -87,7 +103,7 @@
             let el = document.getElementById(id);
             let val = parseInt(el.innerText) + n;
             el.innerText = Math.max(0, val);
-            if(n > 0) {
+            if(n > 0) { // Toggle break on score
                 document.getElementById('brk-1').classList.toggle('hidden');
                 document.getElementById('brk-2').classList.toggle('hidden');
             }
@@ -95,7 +111,7 @@
 
         function toggleRace() {
             let el = document.getElementById('race');
-            let races = [5, 7, 9, 11, 13];
+            let races = [5, 7, 9, 11, 13, 17, 21];
             let current = parseInt(el.innerText);
             let next = races[(races.indexOf(current) + 1) % races.length];
             el.innerText = next;
