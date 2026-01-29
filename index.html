@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V4 - Precise Spacing</title>
+    <title>CT Scoreboard V4 - Ultra Keyboard Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -18,7 +18,6 @@
             --center-w: 18vw; 
         }
 
-        /* Essential Reset and Anti-Zoom */
         * { 
             box-sizing: border-box; 
             user-select: none !important; 
@@ -35,13 +34,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: align-items 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-        /* Keeps banner visible when mobile keyboard is open */
+        /* --- THE KEYBOARD FIX --- */
         body.keyboard-active {
             align-items: flex-start;
-            padding-top: 20px;
+            padding-top: 5px;
+        }
+        /* Scale down and hide middle info when typing to save space */
+        body.keyboard-active .banner-container {
+            height: 100px;
+            transform: scale(0.95);
+        }
+        body.keyboard-active .center-info {
+            display: none; /* Hides the bulky center during typing */
         }
 
         .banner-container {
@@ -54,6 +61,7 @@
             border-bottom: 4px solid var(--border-accent);
             box-shadow: 0 0 25px rgba(34, 255, 109, 0.25);
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .player-section {
@@ -129,8 +137,6 @@
 
         .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 0; }
         .label-race { margin-top: 10px; }
-        
-        /* INCREASED MARGIN HERE: Added space between the 7 and the RULES header */
         .label-rules { margin-top: 12px; } 
         
         .mid-select {
@@ -208,7 +214,6 @@
     <script>
         let breakSide = 1;
 
-        // Auto-populate Race To options (1-30)
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
@@ -218,20 +223,25 @@
             raceSelect.appendChild(opt);
         }
 
-        // Keyboard focus management
         const playerNames = document.querySelectorAll('.player-name');
         playerNames.forEach(name => {
-            name.addEventListener('focus', () => document.body.classList.add('keyboard-active'));
+            name.addEventListener('focus', () => {
+                document.body.classList.add('keyboard-active');
+                // Small delay to ensure browser settles after keyboard pops
+                setTimeout(() => window.scrollTo(0, 0), 100);
+            });
             name.addEventListener('blur', () => {
                 document.body.classList.remove('keyboard-active');
                 window.scrollTo(0, 0);
             });
             name.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') { e.preventDefault(); name.blur(); }
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    name.blur();
+                }
             });
         });
 
-        // Global Anti-Zoom logic
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = (new Date()).getTime();
