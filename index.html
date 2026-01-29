@@ -2,197 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Banner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chalky Trousers - High-Viz Banner</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --bg-transparent: rgba(0, 0, 0, 0); /* For streaming software */
-            --banner-bg: #111111;
-            --accent-green: #22ff6d;
-            --accent-red: #ff4444;
-            --border-accent: #22ff6d;
-            --text-main: #ffffff;
-            --banner-height: 120px;
+            --bg-dark: #000000;
+            --ct-red: #ff4444;
+            --ct-green: #22ff6d;
+            --banner-h: 105px; /* Slightly taller for better readability */
+            --mid-w: 90px;    /* Narrower middle box */
+        }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body, html { 
+            margin: 0; padding: 0; height: 100dvh; background: transparent;
+            font-family: 'Chakra Petch', sans-serif; display: flex; align-items: flex-end; 
         }
 
-        * { 
-            box-sizing: border-box; 
-            user-select: none !important; 
-            -webkit-tap-highlight-color: transparent; 
-            touch-action: none; 
+        .banner-wrap {
+            width: 100%; height: var(--banner-h);
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            border-top: 4px solid var(--ct-red);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 10px; box-shadow: 0 -10px 25px rgba(0,0,0,0.8);
         }
 
-        body, html {
-            margin: 0; padding: 0; 
-            height: 100%; width: 100%;
-            background-color: var(--bg-transparent); /* Transparent for overlays */
-            color: var(--text-main); font-family: 'Chakra Petch', sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center; /* Center the banner on the screen */
-            justify-content: center;
+        .side { flex: 1; display: flex; align-items: center; gap: 12px; overflow: hidden; }
+        .p1 { justify-content: flex-start; }
+        .p2 { justify-content: flex-end; text-align: right; flex-direction: row-reverse; }
+        
+        .name { font-size: 1.6rem; font-weight: 900; color: #fff; text-transform: uppercase; white-space: nowrap; }
+        .score { 
+            min-width: 80px; height: 75px; background: #111; border: 2px solid var(--ct-red);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3.2rem; font-weight: 900; color: #fff; border-radius: 6px; cursor: pointer;
         }
 
-        /* The Main Banner Container */
-        .banner-container {
-            width: 100%;
-            height: var(--banner-height);
-            background: linear-gradient(90deg, #000 0%, #111 50%, #000 100%);
-            display: flex;
-            align-items: center;
-            border-top: 3px solid var(--border-accent);
-            border-bottom: 3px solid var(--border-accent);
-            box-shadow: 0 0 20px rgba(34, 255, 109, 0.2);
-            position: relative;
+        /* Taller, narrower center block */
+        .center-hub { 
+            width: var(--mid-w); height: 110%; /* Makes it "pop" slightly higher than the banner */
+            background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border: 2px solid var(--ct-red); border-bottom: none; border-radius: 8px 8px 0 0;
+            margin-bottom: 10px; z-index: 10;
         }
 
-        /* Player Sections */
-        .player-section {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            height: 100%;
+        .label { font-size: 0.65rem; color: #aaa; font-weight: 700; letter-spacing: 1px; }
+        .race-val { 
+            color: var(--ct-red); font-size: 1.4rem; font-weight: 900; 
+            margin: -2px 0; text-shadow: 0 0 8px rgba(255, 68, 68, 0.4);
         }
-
-        .player-name {
-            flex: 1;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #ddd;
-            outline: none;
-            overflow: hidden;
-            white-space: nowrap;
+        
+        .break-box { 
+            margin-top: 5px; padding: 2px 8px; border-radius: 4px;
+            font-size: 0.7rem; font-weight: 900; transition: all 0.3s;
         }
+        .active-break { background: var(--ct-green); color: #000; box-shadow: 0 0 10px var(--ct-green); }
+        .inactive { color: #333; border: 1px solid #222; }
 
-        .score-box {
-            width: 100px;
-            height: 80%;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 3.5rem;
-            font-weight: 900;
-            border-radius: 8px;
-            margin: 0 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        /* Center Info Section */
-        .center-info {
-            width: 160px;
-            height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-left: 1px solid #333;
-            border-right: 1px solid #333;
-            position: relative;
-        }
-
-        .break-indicator {
-            position: absolute;
-            top: 5px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--accent-green);
-            letter-spacing: 2px;
-        }
-
-        .center-label { font-size: 0.6rem; color: #888; text-transform: uppercase; margin-top: 5px; }
-        .center-value { font-size: 0.9rem; font-weight: 900; color: #fff; }
-
-        .mid-select {
-            background: transparent; border: none; color: #fff; 
-            font-family: inherit; font-size: 0.9rem; font-weight: 900;
-            text-align: center; width: 100%; appearance: none;
-        }
-
-        /* Logo Area */
-        .logo-tag {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--border-accent);
-            color: #000;
-            padding: 2px 15px;
-            font-size: 0.6rem;
-            font-weight: 900;
-            border-radius: 0 0 8px 8px;
-            text-transform: uppercase;
-        }
-
-        /* Animations */
-        @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
-        .flash-active { animation: flash 0.3s ease-out; }
-
-        #orientation-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
-        @media screen and (orientation: portrait) { #orientation-overlay { display: flex; } .banner-container { display: none; } }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div id="orientation-overlay"><h2>ROTATE TO LANDSCAPE</h2></div>
-
-    <div class="banner-container">
-        <div class="player-section" style="justify-content: flex-end; text-align: right;">
-            <div class="player-name" id="p1-txt" contenteditable="true">PLAYER 1</div>
-            <div class="score-box" id="s1" onpointerdown="handleScore('s1', event)">0</div>
+    <div class="banner-wrap">
+        <div class="side p1">
+            <div class="name" contenteditable="true">PLAYER 1</div>
+            <div class="score" id="s1" onclick="upd('s1', 1)" oncontextmenu="event.preventDefault(); upd('s1', -1)">0</div>
         </div>
 
-        <div class="center-info">
-            <div class="break-indicator" id="break-label">◄ BREAK</div>
-            <div class="center-label">RACE TO</div>
-            <select id="race-to-select" class="mid-select">
-                <option value="5">5</option><option value="7">7</option><option value="9">9</option>
-            </select>
-            <div class="center-label">RULES</div>
-            <div class="center-value">ULTIMATE</div>
+        <div class="center-hub">
+            <div class="label">RACE TO</div>
+            <div class="race-val" id="race" onclick="toggleRace()">5</div>
+            <div id="brk-1" class="break-box active-break">BREAK</div>
+            <div id="brk-2" class="break-box inactive hidden">BREAK</div>
         </div>
 
-        <div class="player-section">
-            <div class="score-box" id="s2" onpointerdown="handleScore('s2', event)">0</div>
-            <div class="player-name" id="p2-txt" contenteditable="true">PLAYER 2</div>
+        <div class="side p2">
+            <div class="name" contenteditable="true">PLAYER 2</div>
+            <div class="score" id="s2" onclick="upd('s2', 1)" oncontextmenu="event.preventDefault(); upd('s2', -1)">0</div>
         </div>
-
-        <div class="logo-tag">CHALKY TROUSERS</div>
     </div>
 
     <script>
-        let breakSide = 1;
-
-        function handleScore(id, e) {
-            const el = document.getElementById(id);
-            let val = parseInt(el.innerText);
-            
-            // Right side of score box adds, left side subtracts (simple for mobile)
-            const rect = el.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            
-            if (x > rect.width / 2) {
-                val++;
-                el.classList.add('flash-active');
-                setTimeout(() => el.classList.remove('flash-active'), 300);
-                toggleBreak();
-            } else {
-                val = Math.max(0, val - 1);
+        function upd(id, n) {
+            let el = document.getElementById(id);
+            let val = parseInt(el.innerText) + n;
+            el.innerText = Math.max(0, val);
+            if(n > 0) {
+                document.getElementById('brk-1').classList.toggle('hidden');
+                document.getElementById('brk-2').classList.toggle('hidden');
             }
-            
-            el.innerText = val;
         }
 
-        function toggleBreak() {
-            breakSide = breakSide === 1 ? 2 : 1;
-            const label = document.getElementById('break-label');
-            label.innerText = breakSide === 1 ? "◄ BREAK" : "BREAK ►";
+        function toggleRace() {
+            let el = document.getElementById('race');
+            let races = [5, 7, 9, 11, 13];
+            let current = parseInt(el.innerText);
+            let next = races[(races.indexOf(current) + 1) % races.length];
+            el.innerText = next;
         }
     </script>
 </body>
