@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Advanced Break</title>
+    <title>CT Scoreboard V2 - Full Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -89,7 +89,7 @@
         .center-info {
             width: var(--center-w);
             min-width: 100px;
-            max-width: 160px;
+            max-width: 180px;
             height: 100%;
             background: #000;
             display: flex;
@@ -102,7 +102,6 @@
             flex-shrink: 0;
         }
 
-        /* Improved central Break display */
         .break-wrap {
             position: absolute;
             top: 10px;
@@ -119,12 +118,22 @@
         .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
 
         .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 15px; font-weight: 700; }
-        .center-value { font-size: 20px; font-weight: 900; color: #fff; }
-
+        
+        /* Select styling for centering and visibility */
         .mid-select {
-            background: transparent; border: none; color: #fff; 
-            font-family: inherit; font-size: 20px; font-weight: 900;
-            text-align: center; width: 100%; appearance: none;
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            font-family: inherit; 
+            font-size: 20px; 
+            font-weight: 900;
+            text-align: center; 
+            text-align-last: center; /* Crucial for Safari/Chrome centering */
+            width: 100%; 
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
         .logo-tag {
@@ -170,14 +179,15 @@
 
             <div class="center-label">RACE TO</div>
             <select id="race-to-select" class="mid-select">
-                <option value="5">5</option>
-                <option value="7" selected>7</option>
-                <option value="9">9</option>
-                <option value="11">11</option>
-                <option value="13">13</option>
-            </select>
+                </select>
+
             <div class="center-label">RULES</div>
-            <div class="center-value">ULTIMATE</div>
+            <select id="rules-select" class="mid-select">
+                <option value="uk8">uk8</option>
+                <option value="wpa">wpa</option>
+                <option value="ultimate" selected>ultimate</option>
+                <option value="custom">custom</option>
+            </select>
         </div>
 
         <div class="player-section">
@@ -190,6 +200,16 @@
 
     <script>
         let breakSide = 1;
+
+        // Populate Race To dropdown 1-30
+        const raceSelect = document.getElementById('race-to-select');
+        for (let i = 1; i <= 30; i++) {
+            let opt = document.createElement('option');
+            opt.value = i;
+            opt.innerHTML = i;
+            if (i === 7) opt.selected = true;
+            raceSelect.appendChild(opt);
+        }
 
         // --- GLOBAL ANTI-ZOOM ---
         let lastTouchEnd = 0;
@@ -216,7 +236,6 @@
                 val++;
                 el.classList.add('flash-active');
                 setTimeout(() => el.classList.remove('flash-active'), 300);
-                // Auto-switch break side on point win
                 toggleBreak();
             } else {
                 val = Math.max(0, val - 1);
