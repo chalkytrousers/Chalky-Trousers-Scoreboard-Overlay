@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Responsive Banner</title>
+    <title>CT Scoreboard V2 - Fixed & Fluid</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -13,8 +13,9 @@
             --accent-green: #22ff6d;
             --border-accent: #22ff6d;
             --text-main: #ffffff;
-            --banner-height: 160px;
-            /* Relative widths for horizontal resizing */
+            --banner-height: 160px; /* Your taller preference */
+            
+            /* Responsive width variables */
             --score-w: 14vw; 
             --center-w: 22vw;
         }
@@ -53,20 +54,21 @@
             flex: 1;
             display: flex;
             align-items: center;
-            padding: 0 2vw; /* Responsive padding */
+            padding: 0 2vw;
             height: 100%;
             overflow: hidden;
         }
 
         .player-name {
             flex: 1;
-            font-size: clamp(1rem, 3.5vw, 3rem); /* Fluid font size */
+            /* Minimum 16px font size prevents iOS Safari from auto-zooming */
+            font-size: clamp(16px, 3.5vw, 3.2rem); 
             font-weight: 900;
             text-transform: uppercase;
             color: #ddd;
             outline: none;
             overflow: hidden;
-            text-overflow: ellipsis; /* Prevents text from breaking layout */
+            text-overflow: ellipsis;
             white-space: nowrap;
         }
 
@@ -80,7 +82,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: clamp(2rem, 8vw, 4.8rem); /* Score scales with screen */
+            font-size: clamp(2rem, 8vw, 4.8rem);
             font-weight: 900;
             border-radius: 8px;
             margin: 0 1.5vw;
@@ -101,25 +103,25 @@
             border-left: 1px solid #333;
             border-right: 1px solid #333;
             position: relative;
-            flex-shrink: 0; /* Prevents center from being crushed */
+            flex-shrink: 0;
         }
 
         .break-indicator {
             position: absolute;
             top: 10px;
-            font-size: clamp(0.5rem, 1.5vw, 0.8rem);
+            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
             font-weight: 700;
             color: var(--accent-green);
             letter-spacing: 2px;
             white-space: nowrap;
         }
 
-        .center-label { font-size: clamp(0.4rem, 1.2vw, 0.7rem); color: #888; text-transform: uppercase; margin-top: 8px; }
-        .center-value { font-size: clamp(0.7rem, 2vw, 1.1rem); font-weight: 900; color: #fff; }
+        .center-label { font-size: clamp(0.5rem, 1.2vw, 0.7rem); color: #888; text-transform: uppercase; margin-top: 8px; }
+        .center-value { font-size: clamp(0.8rem, 2vw, 1.1rem); font-weight: 900; color: #fff; }
 
         .mid-select {
             background: transparent; border: none; color: #fff; 
-            font-family: inherit; font-size: clamp(0.7rem, 2vw, 1.1rem); font-weight: 900;
+            font-family: inherit; font-size: clamp(0.8rem, 2vw, 1.1rem); font-weight: 900;
             text-align: center; width: 100%; appearance: none;
         }
 
@@ -150,7 +152,7 @@
 
     <div class="banner-container">
         <div class="player-section" style="justify-content: flex-end; text-align: right;">
-            <div class="player-name" id="p1-txt" contenteditable="true">PLAYER 1</div>
+            <div class="player-name" id="p1-txt" contenteditable="true" spellcheck="false">PLAYER 1</div>
             <div class="score-box" id="s1" onpointerdown="handleScore('s1', event)">0</div>
         </div>
 
@@ -158,7 +160,9 @@
             <div class="break-indicator" id="break-label">◄ BREAK</div>
             <div class="center-label">RACE TO</div>
             <select id="race-to-select" class="mid-select">
-                <option value="5">5</option><option value="7">7</option><option value="9">9</option>
+                <option value="5">5</option>
+                <option value="7" selected>7</option>
+                <option value="9">9</option>
             </select>
             <div class="center-label">RULES</div>
             <div class="center-value">ULTIMATE</div>
@@ -166,7 +170,7 @@
 
         <div class="player-section">
             <div class="score-box" id="s2" onpointerdown="handleScore('s2', event)">0</div>
-            <div class="player-name" id="p2-txt" contenteditable="true">PLAYER 2</div>
+            <div class="player-name" id="p2-txt" contenteditable="true" spellcheck="false">PLAYER 2</div>
         </div>
 
         <div class="logo-tag">CHALKY TROUSERS</div>
@@ -175,11 +179,29 @@
     <script>
         let breakSide = 1;
 
+        // --- PREVENT DOUBLE-TAP ZOOM ---
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault(); 
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // --- PREVENT PINCH ZOOM ---
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
         function handleScore(id, e) {
             const el = document.getElementById(id);
             let val = parseInt(el.innerText);
             const rect = el.getBoundingClientRect();
-            const x = e.clientX - rect.left;
+            
+            // Handle both touch and mouse coordinates
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const x = clientX - rect.left;
             
             if (x > rect.width / 2) {
                 val++;
