@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Full Control</title>
+    <title>CT Scoreboard V2 - Keyboard Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -34,6 +34,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: align-items 0.3s ease; /* Smooth transition for keyboard mode */
+        }
+
+        /* Shift banner to top when editing names */
+        body.keyboard-active {
+            align-items: flex-start;
+            padding-top: 20px;
         }
 
         .banner-container {
@@ -67,6 +74,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            user-select: text !important; /* Allow selection for typing */
+            -webkit-user-select: text !important;
         }
 
         .score-box {
@@ -117,23 +126,15 @@
         .break-text { font-size: clamp(18px, 2vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
         .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
 
-        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 15px; font-weight: 700; }
+        /* Moved header down by increasing margin-top */
+        .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; margin-top: 25px; font-weight: 700; }
         
-        /* Select styling for centering and visibility */
         .mid-select {
-            background: transparent; 
-            border: none; 
-            color: #fff; 
-            font-family: inherit; 
-            font-size: 20px; 
-            font-weight: 900;
-            text-align: center; 
-            text-align-last: center; /* Crucial for Safari/Chrome centering */
-            width: 100%; 
-            appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            text-transform: uppercase;
+            background: transparent; border: none; color: #fff; 
+            font-family: inherit; font-size: 20px; font-weight: 900;
+            text-align: center; text-align-last: center;
+            width: 100%; appearance: none; -webkit-appearance: none;
+            cursor: pointer; text-transform: uppercase;
         }
 
         .logo-tag {
@@ -150,6 +151,7 @@
             border-top: none;
             border-radius: 0 0 8px 8px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         @keyframes flash { 0% { background: var(--accent-green); } 100% { background: #1a1a1a; } }
@@ -195,7 +197,7 @@
             <div class="player-name" id="p2-txt" contenteditable="true" spellcheck="false">PLAYER 2</div>
         </div>
 
-        <div class="logo-tag">CHALKY TROUSERS</div>
+        <div class="logo-tag">WWW.CHALKYTROUSERS.CO.UK</div>
     </div>
 
     <script>
@@ -210,6 +212,25 @@
             if (i === 7) opt.selected = true;
             raceSelect.appendChild(opt);
         }
+
+        // --- KEYBOARD MANAGEMENT ---
+        const playerNames = document.querySelectorAll('.player-name');
+        playerNames.forEach(name => {
+            name.addEventListener('focus', () => {
+                document.body.classList.add('keyboard-active');
+            });
+            name.addEventListener('blur', () => {
+                document.body.classList.remove('keyboard-active');
+                window.scrollTo(0, 0); // Reset any scroll Safari might have forced
+            });
+            // Handle "Enter" key to blur
+            name.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    name.blur();
+                }
+            });
+        });
 
         // --- GLOBAL ANTI-ZOOM ---
         let lastTouchEnd = 0;
