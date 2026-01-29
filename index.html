@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CT Scoreboard V2 - Final Spacing</title>
+    <title>CT Scoreboard V4 - Precise Spacing</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -18,6 +18,7 @@
             --center-w: 18vw; 
         }
 
+        /* Essential Reset and Anti-Zoom */
         * { 
             box-sizing: border-box; 
             user-select: none !important; 
@@ -37,6 +38,7 @@
             transition: align-items 0.3s ease;
         }
 
+        /* Keeps banner visible when mobile keyboard is open */
         body.keyboard-active {
             align-items: flex-start;
             padding-top: 20px;
@@ -102,7 +104,7 @@
             background: #000;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Changed to start to control spacing manually */
+            justify-content: flex-start; 
             align-items: center;
             border-left: 1px solid #333;
             border-right: 1px solid #333;
@@ -119,16 +121,17 @@
             color: var(--accent-green);
             text-shadow: 0 0 12px rgba(34, 255, 109, 0.5);
             cursor: pointer;
-            margin-bottom: 12px; /* Gap below BREAK */
+            margin-bottom: 12px;
         }
 
         .break-text { font-size: clamp(18px, 2vw, 1.2rem); font-weight: 900; letter-spacing: 2px; }
         .arrow { font-size: 1.2rem; font-weight: 900; width: 15px; text-align: center; }
 
-        /* Precise label spacing */
         .center-label { font-size: clamp(14px, 1.5vw, 0.9rem); color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 0; }
-        .label-race { margin-top: 10px; } /* Additional gap above RACE TO header */
-        .label-rules { margin-top: -2px; } /* Closes gap between dropdown and next header */
+        .label-race { margin-top: 10px; }
+        
+        /* INCREASED MARGIN HERE: Added space between the 7 and the RULES header */
+        .label-rules { margin-top: 12px; } 
         
         .mid-select {
             background: transparent; border: none; color: #fff; 
@@ -137,7 +140,7 @@
             width: 100%; appearance: none; -webkit-appearance: none;
             cursor: pointer; text-transform: uppercase;
             line-height: 1.2;
-            margin-top: -4px; /* Tightens gap between header and value */
+            margin-top: -4px;
         }
 
         .logo-tag {
@@ -183,8 +186,7 @@
             </div>
 
             <div class="center-label label-race">RACE TO</div>
-            <select id="race-to-select" class="mid-select">
-                </select>
+            <select id="race-to-select" class="mid-select"></select>
 
             <div class="center-label label-rules">RULES</div>
             <select id="rules-select" class="mid-select">
@@ -206,6 +208,7 @@
     <script>
         let breakSide = 1;
 
+        // Auto-populate Race To options (1-30)
         const raceSelect = document.getElementById('race-to-select');
         for (let i = 1; i <= 30; i++) {
             let opt = document.createElement('option');
@@ -215,35 +218,28 @@
             raceSelect.appendChild(opt);
         }
 
+        // Keyboard focus management
         const playerNames = document.querySelectorAll('.player-name');
         playerNames.forEach(name => {
-            name.addEventListener('focus', () => {
-                document.body.classList.add('keyboard-active');
-            });
+            name.addEventListener('focus', () => document.body.classList.add('keyboard-active'));
             name.addEventListener('blur', () => {
                 document.body.classList.remove('keyboard-active');
                 window.scrollTo(0, 0);
             });
             name.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    name.blur();
-                }
+                if (e.key === 'Enter') { e.preventDefault(); name.blur(); }
             });
         });
 
+        // Global Anti-Zoom logic
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             let now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault(); 
-            }
+            if (now - lastTouchEnd <= 300) event.preventDefault(); 
             lastTouchEnd = now;
         }, { passive: false });
 
-        document.addEventListener('gesturestart', function(e) {
-            e.preventDefault();
-        });
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
 
         function handleScore(id, e) {
             const el = document.getElementById(id);
@@ -265,16 +261,8 @@
 
         function toggleBreak() {
             breakSide = breakSide === 1 ? 2 : 1;
-            const left = document.getElementById('arr-left');
-            const right = document.getElementById('arr-right');
-            
-            if (breakSide === 1) {
-                left.classList.remove('hidden');
-                right.classList.add('hidden');
-            } else {
-                left.classList.add('hidden');
-                right.classList.remove('hidden');
-            }
+            document.getElementById('arr-left').classList.toggle('hidden');
+            document.getElementById('arr-right').classList.toggle('hidden');
         }
     </script>
 </body>
